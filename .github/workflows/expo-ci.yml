@@ -15,8 +15,12 @@ jobs:
     defaults:
       run:
         working-directory: mobile
+    env:
+      CI: "true"
+      EXPO_NO_TELEMETRY: "1"
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -31,8 +35,11 @@ jobs:
           npm run lint --if-present
           npm test --if-present -- -i
 
-      - name: Static export (bundles)
-        run: npx expo export --platform ios,android
+      - name: Static export (Android)
+        run: npx expo export --platform android
+
+      - name: Static export (iOS)
+        run: npx expo export --platform ios
 
       - name: Upload bundles as artifact
         uses: actions/upload-artifact@v4
