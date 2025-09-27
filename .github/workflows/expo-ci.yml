@@ -1,0 +1,35 @@
+name: RN/Expo CI
+on:
+  push:
+    paths: ["mobile/**", ".github/workflows/expo-ci.yml"]
+  pull_request:
+    paths: ["mobile/**"]
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: expo-ci-${{ github.ref }}
+      cancel-in-progress: true
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "mobile/package-lock.json"
+      - name: Install deps
+        run: npm ci
+      - name: Lint & unit tests
+        run: |
+          npm run lint --if-present
+          npm test --if-present -- -i
+      - name: Static export (bundles)
+        run: npx expo export --platform ios,android
+      - name: Upload bundles as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: expo-dist
+          path: mobile/dist/**
