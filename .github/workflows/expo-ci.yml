@@ -46,3 +46,19 @@ jobs:
         with:
           name: expo-dist
           path: mobile/dist/**
+
+      - name: Measure npm ci time
+        id: timed_install
+        run: |
+          START=$(date +%s)
+          npm ci
+          END=$(date +%s)
+          echo "seconds=$((END-START))" >> "$GITHUB_OUTPUT"
+
+      - name: Record timings to job summary
+        run: |
+          {
+            echo "## CI timings"
+            echo "- npm ci: ${{ steps.timed_install.outputs.seconds }}s"
+          } >> "$GITHUB_STEP_SUMMARY"
+
