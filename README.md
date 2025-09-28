@@ -10,8 +10,11 @@ Demo app that searches aircraft by callsign/tail and shows the last position on 
 
 adsb-lookup/
 ├─ mobile/ # Expo app (search, list, detail map)
+
 │ └─ README.md # Expo-specific quickstart (moved here)
+
 └─ api/ # FastAPI service
+
 └─ data/adsb_sample.csv
 
 
